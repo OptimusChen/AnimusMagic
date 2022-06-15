@@ -1,0 +1,8 @@
+main: com.optimus.animusmagic.AnimusMagic
+version: 1.0
+name: AnimusMagic
+api-version: 1.13
+commands:
+  accessorybag:
+    aliases: [ab, abag]
+  customitems:
