@@ -5,6 +5,8 @@ import com.google.gson.JsonParser;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import com.optimus.animusmagic.commands.AccessoryBagCommand;
+import com.optimus.animusmagic.commands.AdminCommand;
+import com.optimus.animusmagic.commands.AnimusCommand;
 import com.optimus.animusmagic.commands.ItemCommand;
 import com.optimus.animusmagic.listeners.EventListener;
 import com.optimus.animusmagic.player.PlayerRegistry;
@@ -29,6 +31,8 @@ public final class AnimusMagic extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new EventListener(), this);
         getCommand("accessorybag").setExecutor(new AccessoryBagCommand());
         getCommand("customitems").setExecutor(new ItemCommand());
+        getCommand("animus").setExecutor(new AnimusCommand());
+        getCommand("animusadmin").setExecutor(new AdminCommand());
     }
 
     @Override

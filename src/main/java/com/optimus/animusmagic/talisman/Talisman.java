@@ -13,6 +13,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -56,7 +57,8 @@ public class Talisman {
         if (meta == null) return false;
 
         if (meta.hasDisplayName()){
-            if (ChatColor.stripColor(meta.getDisplayName()).toLowerCase().contains("talisman")){
+            String name = ChatColor.stripColor(meta.getDisplayName()).toLowerCase();
+            if (name.contains("talisman") && item.getType().equals(Material.PLAYER_HEAD)){
                 return true;
             }else{
                 return false;
@@ -68,17 +70,23 @@ public class Talisman {
     public static Talisman parse(ItemStack item){
         ItemMeta meta = item.getItemMeta();
         String[] split = ChatColor.stripColor(meta.getDisplayName()).split(" ");
-        TalismanType type = TalismanType.valueOf(split[0].toUpperCase());
-        int teir;
 
-        if (split.length == 2){
-          teir = 1;
-        } else {
-          teir = Integer.parseInt(split[2]);
+        try {
+            TalismanType type = TalismanType.valueOf(split[0].toUpperCase());
+            int teir;
+
+            if (split.length == 2){
+                teir = 1;
+            } else {
+                teir = Integer.parseInt(split[2]);
+            }
+
+            Talisman talisman = new Talisman(type, teir);
+
+            return talisman;
+        }catch (IllegalArgumentException e){
+
         }
-
-        Talisman talisman = new Talisman(type, teir);
-
-        return talisman;
+        return null;
     }
 }

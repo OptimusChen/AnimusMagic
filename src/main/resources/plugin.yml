@@ -6,3 +6,6 @@ commands:
   accessorybag:
     aliases: [ab, abag]
   customitems:
+  animusadmin:
+    aliases: [aadmin]
+  animus:
