@@ -15,6 +15,7 @@ import org.bukkit.inventory.meta.SkullMeta;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
@@ -44,6 +45,26 @@ public class ItemUtils {
         if (tmp.length() > 0) {
             lore.add(ChatColor.GRAY + tmp);
         }
+    }
+
+    public static List<String> addLoreMessage(String string){
+        List<String> lore = new ArrayList<>();
+
+        String[] strings = string.split(" ");
+        String tmp = "";
+        for (String s : strings){
+            if ((s.length() + 1 + tmp.length()) <= 32){
+                tmp = tmp + s + " ";
+            } else {
+                lore.add(ChatColor.GRAY + tmp);
+                tmp = s + " ";
+            }
+        }
+        if (tmp.length() > 0) {
+            lore.add(ChatColor.GRAY + tmp);
+        }
+
+        return lore;
     }
 
     public static ItemStack IDtoSkull(ItemStack head, String url) {

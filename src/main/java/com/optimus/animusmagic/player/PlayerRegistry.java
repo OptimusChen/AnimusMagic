@@ -20,8 +20,10 @@ public class PlayerRegistry {
     }
 
     public static void unRegister(Player player){
-        get(player).disconnect();
-        map.remove(player.getUniqueId());
+        if (get(player) != null){
+            get(player).disconnect();
+            map.remove(player.getUniqueId());
+        }
     }
 
     public static void unRegister(UUID uuid){

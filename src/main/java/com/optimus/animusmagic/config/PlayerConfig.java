@@ -66,6 +66,7 @@ public class PlayerConfig {
                     ArrayList<ItemStack> storedAccessories = new ArrayList<>();
                     ArrayList<ItemStack> accessories = new ArrayList<>();
                     ArrayList<ItemStack> activeTalismans = new ArrayList<>();
+                    ArrayList<String> enchants = new ArrayList<>();
 
                     config.set("stored-accessories", storedAccessories);
                     config.set("stored-active", accessories);
@@ -75,6 +76,7 @@ public class PlayerConfig {
                     config.set("animus-study-level", 1);
                     config.set("mana", 100);
                     config.set("shapeshift", "Default");
+                    config.set("enchants", enchants);
 
                     if (animus == 0){
                         config.set("animus", true);

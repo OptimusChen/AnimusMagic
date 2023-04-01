@@ -13,8 +13,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.craftbukkit.v1_18_R2.entity.CraftItem;
-import org.bukkit.craftbukkit.v1_18_R2.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_19_R1.entity.CraftItem;
+import org.bukkit.craftbukkit.v1_19_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -29,11 +29,11 @@ import java.util.Objects;
 
 public class AccessoryBag extends CustomInventory implements Listener {
 
-    private Player player;
-    private AnimusPlayer animusPlayer;
-    private static ArrayList<Integer> talisman = new ArrayList<>();
-    private static ArrayList<Integer> accessory = new ArrayList<>();
-    private static ArrayList<Integer> storage = new ArrayList<>();
+    private final Player player;
+    private final AnimusPlayer animusPlayer;
+    private final static ArrayList<Integer> talisman = new ArrayList<>();
+    private static final ArrayList<Integer> accessory = new ArrayList<>();
+    private static final ArrayList<Integer> storage = new ArrayList<>();
 
     public AccessoryBag(AnimusPlayer player) {
         super(6, "Accessories");

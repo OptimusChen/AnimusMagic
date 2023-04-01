@@ -9,3 +9,6 @@ commands:
   animusadmin:
     aliases: [aadmin]
   animus:
+  spawnnpc:
+  itembrowser:
+    aliases: [ib]

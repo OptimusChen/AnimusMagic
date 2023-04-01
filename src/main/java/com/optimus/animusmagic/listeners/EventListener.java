@@ -3,26 +3,32 @@ package com.optimus.animusmagic.listeners;
 import com.optimus.animusmagic.AnimusMagic;
 import com.optimus.animusmagic.event.TalismanEquipEvent;
 import com.optimus.animusmagic.event.TalismanUnEquipEvent;
+import com.optimus.animusmagic.item.ItemHandler;
 import com.optimus.animusmagic.player.AnimusPlayer;
 import com.optimus.animusmagic.player.PlayerRegistry;
 import com.optimus.animusmagic.talisman.Talisman;
 import com.optimus.animusmagic.talisman.TalismanType;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Sound;
+import net.citizensnpcs.api.event.NPCRightClickEvent;
+import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityShootBowEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 
@@ -125,13 +131,16 @@ public class EventListener implements Listener {
         new BukkitRunnable() {
             @Override
             public void run() {
-                AnimusPlayer animusPlayer = PlayerRegistry.get(e.getPlayer());
-                ArrayList<ItemStack> list = (ArrayList<ItemStack>) animusPlayer.getConfig().getItem("stored-talismans");
+                Player player = e.getPlayer();
+                if (!player.hasMetadata("NPC")) {
+                    AnimusPlayer animusPlayer = PlayerRegistry.get(player);
+                    ArrayList<ItemStack> list = (ArrayList<ItemStack>) animusPlayer.getConfig().getItem("stored-talismans");
 
-                for (ItemStack item : list){
-                    if (Talisman.isTalisman(item) && !Talisman.parse(item).getType().equals(TalismanType.RUNNING)){
-                        Bukkit.getPluginManager().callEvent(new TalismanUnEquipEvent(animusPlayer, item));
-                        Bukkit.getPluginManager().callEvent(new TalismanEquipEvent(animusPlayer, item));
+                    for (ItemStack item : list){
+                        if (Talisman.isTalisman(item) && !Talisman.parse(item).getType().equals(TalismanType.RUNNING)){
+                            Bukkit.getPluginManager().callEvent(new TalismanUnEquipEvent(animusPlayer, item));
+                            Bukkit.getPluginManager().callEvent(new TalismanEquipEvent(animusPlayer, item));
+                        }
                     }
                 }
             }
@@ -139,11 +148,60 @@ public class EventListener implements Listener {
     }
 
     @EventHandler
+    public void onShoot(EntityShootBowEvent e) {
+        if (e.getEntity() instanceof Player player) {
+            ItemStack item = player.getEquipment().getItemInMainHand();
+            if (ItemHandler.getInstance().isRegistered(item)) {
+                ItemHandler.getInstance().getRegistered(item).onBowShoot(e);
+            }
+        }
+    }
+
+    @EventHandler
     public void onDamage(EntityDamageByEntityEvent e){
-        if (e.getDamager() instanceof Player) {
-            Player player = (Player) e.getDamager();
-            AnimusPlayer animusPlayer = PlayerRegistry.get(player);
-            e.setDamage(e.getDamage() * animusPlayer.getDamageMult());
+        if (e.getDamager() instanceof Player player) {
+            if (!player.hasMetadata("NPC")) {
+                AnimusPlayer animusPlayer = PlayerRegistry.get(player);
+                e.setDamage(e.getDamage() * animusPlayer.getDamageMult());
+            }
+
+            ItemStack item = player.getEquipment().getItemInMainHand();
+
+            if (ItemHandler.getInstance().isRegistered(item)) {
+                ItemHandler.getInstance().getRegistered(item).onEntityDamage(e);
+            }
+        } else if (e.getDamager() instanceof Arrow arrow) {
+            if (arrow.getShooter() instanceof Player player) {
+                ItemStack item = player.getEquipment().getItemInMainHand();
+
+                if (ItemHandler.getInstance().isRegistered(item)) {
+                    ItemHandler.getInstance().getRegistered(item).onEntityDamage(e);
+                }
+            }
+        }
+    }
+
+    @EventHandler
+    public void onClick(NPCRightClickEvent e) {
+        if (ChatColor.stripColor(e.getNPC().getName()).equalsIgnoreCase("Click")) {
+
+        }
+    }
+
+    @EventHandler
+    public void onClick(PlayerInteractEvent e) {
+        ItemStack item = e.getItem();
+
+        if (item != null) {
+            if (e.getAction().equals(Action.RIGHT_CLICK_AIR) || e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
+                if (ItemHandler.getInstance().isRegistered(item)) {
+                    ItemHandler.getInstance().getRegistered(item).onRightClick(e);
+                }
+            } else if (e.getAction().equals(Action.LEFT_CLICK_AIR) || e.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
+                if (ItemHandler.getInstance().isRegistered(item)) {
+                    ItemHandler.getInstance().getRegistered(item).onLeftClick(e);
+                }
+            }
         }
     }
 }
